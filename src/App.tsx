@@ -3,8 +3,10 @@ import { Heart, Music, Pause, Play, ChevronDown } from "lucide-react";
 
 export default function LoveStory() {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [currentSection, setCurrentSection] = useState("intro");
-  const audioRef = useRef(null);
+const [currentSection, setCurrentSection] = useState("intro");
+const [started, setStarted] = useState(false);
+
+const audioRef = useRef(null);
 
   const sectionMusic = {
     intro: {
@@ -75,6 +77,7 @@ export default function LoveStory() {
     return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
   }, [currentSection]);
 
+ 
   const toggleMusic = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -85,6 +88,20 @@ export default function LoveStory() {
       setIsPlaying(!isPlaying);
     }
   };
+  
+  const startStory = async () => {
+    setStarted(true);
+  
+    if (audioRef.current) {
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (err) {
+        console.log("Autoplay blocked", err);
+      }
+    }
+  };
+
 
   // PHOTO CAROUSEL WITH FRAME & TRANSITIONS
   const PhotoCarousel = ({ photoArray, sectionId }) => {
@@ -192,10 +209,37 @@ export default function LoveStory() {
       "https://www.dropbox.com/scl/fi/rxf0d9r7b2687h9xeikpu/IMG_4223.JPG?rlkey=kc3iowh5djykvufixr2tycbje&st=qpfwpph6&dl=1",
     ],
   };
-
   return (
+    <>
+    {!started && (
+  <div className="fixed inset-0 bg-pink-50 z-[9999] flex flex-col items-center justify-center">
+    <Heart className="w-20 h-20 text-pink-600 fill-pink-600 animate-pulse mb-6" />
+
+    <h1 className="text-5xl font-bold text-pink-600 mb-4">
+      Happy Girlfriend's Day ❤️
+    </h1>
+
+    <p className="text-gray-600 text-center mb-8 px-6">
+      I made something special just for you.
+      <br />
+      Put on your headphones and press Start.
+    </p>
+
+    <button
+      onClick={startStory}
+      className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-4 rounded-full text-xl font-bold shadow-xl"
+    >
+      ▶ Start Experience
+    </button>
+  </div>
+)}
     <div className="bg-gradient-to-b from-pink-50 via-white to-pink-50 min-h-screen">
-      <audio ref={audioRef} loop autoPlay />
+      <audio
+  ref={audioRef}
+  loop
+  playsInline
+  preload="auto"
+/>
 
       {/* Music Control */}
       <button
@@ -444,6 +488,7 @@ export default function LoveStory() {
           Made with ❤️ for the most beautiful person in my life
         </p>
       </div>
-    </div>
-  );
+  </div>
+</>
+);
 }
