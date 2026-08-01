@@ -47,8 +47,8 @@ const audioRef = useRef<HTMLAudioElement | null>(null);
   };
 
   useEffect(() => {
-    if (audioRef.current && sectionMusic[currentSection]) {
-      const music = sectionMusic[currentSection];
+    if (audioRef.current && sectionMusic[currentSection as keyof typeof sectionMusic]) {
+      const music = sectionMusic[currentSection as keyof typeof sectionMusic];
       audioRef.current.src = music.url;
       audioRef.current.currentTime = music.startTime; // Set start time
 
@@ -63,7 +63,8 @@ const audioRef = useRef<HTMLAudioElement | null>(null);
     const audio = audioRef.current;
     if (!audio) return;
 
-    const music = sectionMusic[currentSection];
+    const music =
+  sectionMusic[currentSection as keyof typeof sectionMusic];
     if (!music) return;
 
     const handleTimeUpdate = () => {
