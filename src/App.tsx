@@ -3,7 +3,8 @@ import { Heart, Music, Pause, ChevronDown } from "lucide-react";
 
 export default function LoveStory() {
   const [isPlaying, setIsPlaying] = useState(true);
-const [currentSection, setCurrentSection] = useState("intro");
+  const [currentSection, setCurrentSection] =
+  useState<keyof typeof sectionMusic>("intro");
 const [started, setStarted] = useState(false);
 
 const audioRef = useRef<HTMLAudioElement | null>(null);
