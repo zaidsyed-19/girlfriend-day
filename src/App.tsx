@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Heart, Music, Pause, Play, ChevronDown } from "lucide-react";
+import { Heart, Music, Pause, ChevronDown } from "lucide-react";
 
 export default function LoveStory() {
   const [isPlaying, setIsPlaying] = useState(true);
 const [currentSection, setCurrentSection] = useState("intro");
 const [started, setStarted] = useState(false);
 
-const audioRef = useRef(null);
-
+const audioRef = useRef<HTMLAudioElement | null>(null);
   const sectionMusic = {
     intro: {
       url: "https://www.dropbox.com/scl/fi/noelqxuc4bqi9ne9umzja/Nanku-Lambo-Drive-Pyar-Ki-Si-Lyrics.mp3?rlkey=4pvvns14k3iryile2htbupjd3s&dl=1",
@@ -67,23 +66,28 @@ const audioRef = useRef(null);
     if (!music) return;
 
     const handleTimeUpdate = () => {
-      if (audio.currentTime >= music.startTime + music.duration) {
+      if (
+        audio &&
+        audio.currentTime >= music.startTime + music.duration
+      ) {
         audio.pause();
         audio.currentTime = music.startTime;
       }
     };
-
+    
     audio.addEventListener("timeupdate", handleTimeUpdate);
-    return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [currentSection]);
+    
+    return () =>
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+    }, [currentSection]);
 
  
   const toggleMusic = () => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.pause();
+        audioRef.current?.pause();
       } else {
-        audioRef.current.play();
+        audioRef.current?.play();
       }
       setIsPlaying(!isPlaying);
     }
@@ -104,7 +108,12 @@ const audioRef = useRef(null);
 
 
   // PHOTO CAROUSEL WITH FRAME & TRANSITIONS
-  const PhotoCarousel = ({ photoArray, sectionId }) => {
+  const PhotoCarousel = ({
+    photoArray,
+  }: {
+    photoArray: string[];
+    sectionId?: string;
+  }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -150,8 +159,16 @@ const audioRef = useRef(null);
   };
 
   // SECTION COMPONENT
-  const Section = ({ id, title, children }) => {
-    const ref = useRef(null);
+  const Section = ({
+    id,
+    title,
+    children,
+  }: {
+    id: string;
+    title?: string;
+    children: React.ReactNode;
+  }) => {
+    const ref = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
       const observer = new IntersectionObserver(
