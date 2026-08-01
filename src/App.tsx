@@ -176,7 +176,7 @@ const audioRef = useRef<HTMLAudioElement | null>(null);
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            setCurrentSection(id);
+            setCurrentSection(id as keyof typeof sectionMusic);
           }
         },
         { threshold: 0.5 }
